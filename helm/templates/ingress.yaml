@@ -1,0 +1,45 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "app.appName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.serviceName" . }}
+                port:
+                  number: {{ .Values.service.frontend.targetPort }}
+          - path: /table
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.serviceName" . }}
+                port:
+                  number: {{ .Values.service.httpPort.targetPort }}
+          - path: /metrics
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "app.serviceName" . }}
+                port:
+                  number: {{ .Values.service.prometheus.targetPort }}
+      host: {{ .Values.ingress.host }}
+{{- end }}
