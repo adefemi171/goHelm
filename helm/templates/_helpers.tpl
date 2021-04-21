@@ -22,7 +22,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Expand service account name.
 */}}
 {{- define "app.serviceAccountName" -}}
-{{- default (include "app.name" .) .Values.webapp.serviceAccount.name -}}
+{{- default (include "app.name" .) .Values.gohelm.serviceAccount.name -}}
 {{- end -}}
 
 {{/*
