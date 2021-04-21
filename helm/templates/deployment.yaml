@@ -1,13 +1,13 @@
-{{- if eq .Values.goHelm.kind "deployment" }}
+{{- if eq .Values.gohelm.kind "deployment" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ default (include "app.name" .) .Values.goHelm.name }}
+  name: {{ default (include "app.name" .) .Values.gohelm.name }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.goHelm.replicaCount }}
+  replicas: {{ .Values.gohelm.replicaCount }}
   selector:
     matchLabels:
       app: {{ include "app.appName" . }}
@@ -15,52 +15,52 @@ spec:
     metadata:
       labels:
         app: {{ include "app.appName" . }}
-{{- if or (.Values.prometheus.create) (.Values.goHelm.pod.annotations) }}
+{{- if or (.Values.prometheus.create) (.Values.gohelm.pod.annotations) }}
       annotations:
 {{- if .Values.prometheus.create }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.prometheus.port }}"
 {{- end }}
-{{- if .Values.goHelm.pod.annotations }}
-{{ toYaml .Values.goHelm.pod.annotations | indent 8 }}
+{{- if .Values.gohelm.pod.annotations }}
+{{ toYaml .Values.gohelm.pod.annotations | indent 8 }}
 {{- end }}
 {{- end }}
     spec:
-{{- if .Values.goHelm.volumes }}
+{{- if .Values.gohelm.volumes }}
       volumes:
-{{ toYaml .Values.goHelm.volumes | indent 6 }}
+{{ toYaml .Values.gohelm.volumes | indent 6 }}
 {{- end }}
       serviceAccountName: {{ include "app.serviceAccountName" . }}
-      hostNetwork: {{ .Values.goHelm.hostNetwork }}
+      hostNetwork: {{ .Values.gohelm.hostNetwork }}
       containers:
 
-      - image: "{{ .Values.goHelm.image.repository }}:{{ .Values.goHelm.image.tag }}"
+      - image: "{{ .Values.gohelm.image.repository }}"
         name: {{ include "app.name" . }}
-        imagePullPolicy: "{{ .Values.goHelm.image.pullPolicy }}"
+        imagePullPolicy: "{{ .Values.gohelm.image.pullPolicy }}"
         ports:
         - name: http
-          containerPort: {{ .Values.goHelm.port }}
-{{ if .Values.goHelm.customPorts }}
-{{ toYaml .Values.goHelm.customPorts | indent 8 }}
+          containerPort: {{ .Values.gohelm.port }}
+{{ if .Values.gohelm.customPorts }}
+{{ toYaml .Values.gohelm.customPorts | indent 8 }}
 {{ end }}
 {{- if .Values.prometheus.create }}
         - name: prometheus
           containerPort: {{ .Values.prometheus.port }}
 {{- end }}
         resources:
-{{ toYaml .Values.goHelm.resources | indent 10 }}
+{{ toYaml .Values.gohelm.resources | indent 10 }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
             - ALL
-{{- if .Values.goHelm.volumeMounts }}
+{{- if .Values.gohelm.volumeMounts }}
         volumeMounts:
-{{ toYaml .Values.goHelm.volumeMounts | indent 8 }}
+{{ toYaml .Values.gohelm.volumeMounts | indent 8 }}
 {{- end }}
         env:
         - name: APP_PORT
-          value: "{{ .Values.goHelm.port }}"
+          value: "{{ .Values.gohelm.port }}"
         - name: PROMETHEUS_PORT
           value: "{{ .Values.prometheus.port }}"
         - name: POD_NAMESPACE

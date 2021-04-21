@@ -36,12 +36,6 @@ spec:
     protocol: TCP
     name: http
 {{- end }}
-{{- if .Values.service.frontend.enable }}
-  - port: {{ .Values.service.frontend.port }}
-    targetPort: {{ .Values.service.frontend.targetPort }}
-    protocol: TCP
-    name: frontend
-{{- end }}
 {{- if .Values.service.prometheus.enable }}
   - port: {{ .Values.service.prometheus.port }}
     targetPort: {{ .Values.service.prometheus.targetPort }}
